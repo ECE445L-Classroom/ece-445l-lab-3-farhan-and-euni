@@ -42,13 +42,39 @@
 void DisableInterrupts(void); // Disable interrupts
 void EnableInterrupts(void);  // Enable interrupts
 void WaitForInterrupt(void);  // low power mode
+
+
+volatile int seconds = 0;
+volatile int minutes = 0;
+volatile int hours = 12;
+void UpdateClock(void){
+    seconds++;
+    if (seconds >= 60) {
+        seconds = 0;
+        minutes++;
+        if (minutes >= 60) {
+            minutes = 0;
+            hours++;
+            if (hours >= 12) {
+                hours = 0;
+            }
+        }
+    }
+    //drawClockHands(hours, minutes, seconds);
+    //displayDigitalTime(hours, minutes, seconds);
+}
+
+
 int main(void){
   DisableInterrupts();
   PLL_Init(Bus80MHz);    // bus clock at 80 MHz
   // write this
   EnableInterrupts();
+	Timer0A_Init(&UpdateClock, 80000000, 1);  // 1-second timer
+
   while(1){
       // write this
   }
 }
+
 
